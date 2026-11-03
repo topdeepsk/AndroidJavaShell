@@ -54,17 +54,20 @@ jobs:
       - name: 配置 Gradle 缓存
         uses: gradle/actions/setup-gradle@v4
 
-      - name: 打包 core 的 release AAR
+      - name: 打包 core 与 service 的 release AAR
         run: |
           # 仓库里 gradlew 的权限位若被 Windows 提交弄丢（100644），Linux 上直接 ./gradlew 会 Permission denied
           chmod +x gradlew
-          ./gradlew :core:assembleRelease "-Pversion=${{ steps.meta.outputs.tag }}" --no-daemon
+          ./gradlew :core:assembleRelease :service:assembleRelease \
+            "-Pversion=${{ steps.meta.outputs.tag }}" --no-daemon
 
       - name: 整理产物
         run: |
           mkdir -p dist
           cp core/build/outputs/aar/core-release.aar \
-             "dist/${{ env.JITPACK_ARTIFACT }}-${{ steps.meta.outputs.tag }}.aar"
+             "dist/${{ env.JITPACK_ARTIFACT }}-core-${{ steps.meta.outputs.tag }}.aar"
+          cp service/build/outputs/aar/service-release.aar \
+             "dist/${{ env.JITPACK_ARTIFACT }}-service-${{ steps.meta.outputs.tag }}.aar"
           ls -l dist
 
       - name: 上传 AAR 到 GitHub Release
@@ -72,7 +75,9 @@ jobs:
         with:
           tag_name: ${{ steps.meta.outputs.tag }}
           name: ${{ steps.meta.outputs.tag }}
-          files: dist/${{ env.JITPACK_ARTIFACT }}-${{ steps.meta.outputs.tag }}.aar
+          files: |
+            dist/${{ env.JITPACK_ARTIFACT }}-core-${{ steps.meta.outputs.tag }}.aar
+            dist/${{ env.JITPACK_ARTIFACT }}-service-${{ steps.meta.outputs.tag }}.aar
           generate_release_notes: true
 
       - name: 更新 README 里的版本号
