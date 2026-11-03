@@ -24,8 +24,8 @@ dependencyResolutionManagement {
 
 ```kotlin
 // app/build.gradle.kts
-implementation("com.github.topdeepsk.AndroidJavaShell:core:1.0.0")     // run code in a child process
-implementation("com.github.topdeepsk.AndroidJavaShell:service:1.0.0")  // + call a class through a proxy
+implementation("com.github.topdeepsk.AndroidJavaShell:core:1.0.1")     // run code in a child process
+implementation("com.github.topdeepsk.AndroidJavaShell:service:1.0.1")  // + call a class through a proxy
 ```
 
 ## Usage

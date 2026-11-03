@@ -24,8 +24,8 @@ dependencyResolutionManagement {
 
 ```kotlin
 // app/build.gradle.kts
-implementation("com.github.topdeepsk.AndroidJavaShell:core:1.0.0")     // 在子进程中运行代码
-implementation("com.github.topdeepsk.AndroidJavaShell:service:1.0.0")  // 额外支持跨进程调用类
+implementation("com.github.topdeepsk.AndroidJavaShell:core:1.0.1")     // 在子进程中运行代码
+implementation("com.github.topdeepsk.AndroidJavaShell:service:1.0.1")  // 额外支持跨进程调用类
 ```
 
 ## 用法
