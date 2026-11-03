@@ -1,5 +1,7 @@
 # AndroidJavaShell
 
+[![Release](https://jitpack.io/v/topdeepsk/AndroidJavaShell.svg)](https://jitpack.io/#topdeepsk/AndroidJavaShell)
+
 [English](README.md) | **简体中文**
 
 在独立的 Android 进程中运行 Java 代码（可选 `root`），并从应用进程里调用它。

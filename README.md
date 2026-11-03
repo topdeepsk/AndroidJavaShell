@@ -1,6 +1,8 @@
 # AndroidJavaShell
 
-**English** | [简体中文](README_zh.md)
+[![Release](https://jitpack.io/v/topdeepsk/AndroidJavaShell.svg)](https://jitpack.io/#topdeepsk/AndroidJavaShell)
+
+**English** | [简体中文](README.zh-CN.md)
 
 Run Java code in a separate Android process, optionally as `root`, and call it from your app.
 
