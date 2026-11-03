@@ -6,8 +6,8 @@ import android.net.LocalSocket;
 
 import com.android.dx.stock.ProxyBuilder;
 import com.github.topdeepsk.androidjavashell.core.JavaShell;
-import com.github.topdeepsk.androidjavashell.core.JavaShellProcess;
 import com.github.topdeepsk.androidjavashell.core.JavaShellArgumentException;
+import com.github.topdeepsk.androidjavashell.core.JavaShellProcess;
 import com.github.topdeepsk.androidjavashell.core.UniqueFileNameGenerator;
 
 import java.io.Closeable;
@@ -134,6 +134,9 @@ public final class JavaShellService {
         } catch (Throwable t) {
             throw new JavaShellArgumentException("failed to create proxy for " + targetService.getName()
                     + ": " + JavaShellServiceProtocol.describeRootCause(t), t);
+        } finally {
+            // 此时代理类已经加载到内存里了，可以删除缓存的文件；或者生成代理失败时清理缓存文件夹
+            deleteRecursively(dexCachePath);
         }
     }
 
@@ -213,10 +216,9 @@ public final class JavaShellService {
         if (entries == null) {
             return;
         }
-        var expiredBefore = System.nanoTime() - TimeUnit.MINUTES.toNanos(60);
         for (var entry : entries) {
             var element = UNIQUE_DEX_CACHE.parse(entry.getName());
-            if (element == null || element.getNanoTime() >= expiredBefore) {
+            if (element == null || !element.isElapsedRealtimeExpired(60 * 60 * 1000L)) {
                 continue;
             }
             deleteRecursively(entry);

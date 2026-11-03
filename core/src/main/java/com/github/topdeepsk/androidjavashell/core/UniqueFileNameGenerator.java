@@ -1,8 +1,10 @@
 package com.github.topdeepsk.androidjavashell.core;
 
 import android.os.Process;
+import android.os.SystemClock;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class UniqueFileNameGenerator {
@@ -17,14 +19,15 @@ public final class UniqueFileNameGenerator {
     }
 
     public String generate() {
-        return String.format(Locale.getDefault(), "%s-%d-%d-%d.%s", prefix, Process.myPid(), sequence.incrementAndGet(), System.nanoTime(), suffix);
+        return String.format(Locale.getDefault(), "%s-%d-%d-%d.%s", prefix, Process.myPid(),
+                sequence.incrementAndGet(), SystemClock.elapsedRealtime(), suffix);
     }
 
     /**
      * 把 {@link #generate()} 产出的文件名还原成 {@link Element}，不是本生成器的产物时返回 null。
      *
      * <p>判定是严格的：必须以 {@code prefix + "-"} 开头、以 {@code "." + suffix} 结尾，
-     * 中间恰好是 pid、序号、nanoTime 三段十进制数字。这样同一个目录里多种前缀的文件
+     * 中间恰好是 pid、序号、elapsedRealtime 三段十进制数字。这样同一个目录里多种前缀的文件
      * 不会互相误判，长度截断、手改过的名字也会落成 null 而不是解析出错误的 pid。</p>
      */
     public Element parse(String filename) {
@@ -56,16 +59,21 @@ public final class UniqueFileNameGenerator {
     public static class Element {
         private final int pid;
         private final int sequence;
-        private final Long nanoTime;
+        private final long elapsedRealtime;
 
-        public Element(int pid, int sequence, Long nanoTime) {
+        public Element(int pid, int sequence, long elapsedRealtime) {
             this.pid = pid;
             this.sequence = sequence;
-            this.nanoTime = nanoTime;
+            this.elapsedRealtime = elapsedRealtime;
         }
 
         public int getPid() { return pid; }
         public int getSequence() { return sequence; }
-        public Long getNanoTime() { return nanoTime; }
+        public long getElapsedRealtime() { return elapsedRealtime; }
+
+        public boolean isElapsedRealtimeExpired(long maxAgeMillis) {
+            long now = SystemClock.elapsedRealtime();
+            return elapsedRealtime < now || elapsedRealtime > now + TimeUnit.MILLISECONDS.toMillis(maxAgeMillis);
+        }
     }
 }

@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "AndroidJavaShell"
 include(":core")
 include(":service")
+include(":test")

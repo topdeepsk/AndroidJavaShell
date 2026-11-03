@@ -140,6 +140,10 @@ public final class JavaShellBootstrap {
             InputStream stream = null;
             try {
                 stream = new FileInputStream(guardPath);
+
+                // 持有文件引用后可以删除文件，引用的文件需要关闭进程以后才会被删除
+                new File(guardPath).delete();
+
                 byte[] buffer = new byte[64];
                 while (stream.read(buffer) >= 0) {
                     // 父进程活着时读操作一直阻塞，这里拿不到数据

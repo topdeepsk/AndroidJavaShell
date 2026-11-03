@@ -496,16 +496,15 @@ public final class JavaShell {
         if (files == null) {
             return;
         }
-        long expiredBefore = System.nanoTime() - TimeUnit.MINUTES.toNanos(60);
         for (var file : files) {
             var name = file.getName();
             var elementPayload = PAYLOAD_FILE_NAME.parse(name);
-            if (elementPayload != null && elementPayload.getNanoTime() < expiredBefore) {
+            if (elementPayload != null && elementPayload.isElapsedRealtimeExpired(60 * 60 * 1000L)) {
                 deleteQuietly(file);
                 continue;
             }
             var elementGuard = GUARD_PIPE_NAME.parse(name);
-            if (elementGuard != null && elementGuard.getNanoTime() < expiredBefore) {
+            if (elementGuard != null && elementGuard.isElapsedRealtimeExpired(60 * 60 * 1000L)) {
                 deleteQuietly(file);
             }
         }
