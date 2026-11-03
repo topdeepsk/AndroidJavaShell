@@ -1,0 +1,7 @@
+-keepclassmembers,allowobfuscation class * implements com.github.topdeepsk.androidjavashell.service.JavaShellRemoteService {
+    <init>();
+    public *;
+    protected *;
+}
+
+-keepattributes Exceptions

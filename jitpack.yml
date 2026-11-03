@@ -1,0 +1,22 @@
+# JitPack 构建配置（必须放在仓库根目录）
+#
+# JitPack 是「按需构建」：第一次有人请求某个 tag 的依赖时，它会 checkout 该 tag，
+# 按下面的命令构建，再把 ~/.m2 里 groupId 以 com.github.topdeepsk 开头的产物
+# 当作该版本发布出去。所以这里不需要任何上传凭据，也就没有「推送 AAR 到 JitPack」这一步。
+
+# AGP 9.x / Gradle 9.x 都要求 JDK 17 以上（AGP 的字节码版本为 61）
+jdk:
+  - openjdk17
+
+before_install:
+  # compileSdk 37 的平台包在 JitPack 镜像里可能尚未预装：
+  # 已装时这条命令会立即结束，未装时尝试补装，失败也不阻断（真缺了会在编译阶段给出明确报错）
+  - (yes | sdkmanager "platforms;android-37" > /dev/null 2>&1) || true
+
+install:
+  # gradlew 的权限位可能被 Windows 提交弄丢，先补一次再执行
+  - chmod +x gradlew
+  # 两个库都发布：com.github.topdeepsk.AndroidJavaShell:core 与 :service
+  # VERSION 是 JitPack 注入的环境变量（值就是 tag 或 commit），显式传给 Gradle，
+  # 保证两个模块的 POM 版本、以及 :service 对 :core 的依赖版本都与 tag 完全一致
+  - ./gradlew :core:publishToMavenLocal :service:publishToMavenLocal -Pversion="${VERSION:-1.0.0}" -x test --no-daemon --stacktrace

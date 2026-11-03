@@ -1,0 +1,11 @@
+-keepclassmembers class com.github.topdeepsk.androidjavashell.core.JavaShellBootstrap {
+    public static void main(java.lang.String[]);
+}
+
+-keepclassmembers,allowobfuscation interface com.github.topdeepsk.androidjavashell.core.JavaShellEntry {
+    public void main(java.lang.Object[]);
+}
+
+-keepclassmembers class * implements com.github.topdeepsk.androidjavashell.core.JavaShellEntry {
+    <init>();
+}

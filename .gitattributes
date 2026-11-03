@@ -1,0 +1,6 @@
+# Windows 上提交的 shell 脚本容易被转成 CRLF，导致 Linux/CI 里报
+# "/usr/bin/env: 'sh\r': No such file or directory"；这里固定 gradlew 用 LF。
+# 注意：文件的可执行位无法用 .gitattributes 表达，需要用
+#   git update-index --chmod=+x gradlew
+# 维护（Windows 的 core.filemode=false，本地 chmod 不会进 git）。
+gradlew text eol=lf
